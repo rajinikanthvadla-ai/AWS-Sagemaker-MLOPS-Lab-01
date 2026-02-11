@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hyderabad House Price Predictor</title>
+    <style>
+        body { font-family: Arial; margin: 50px; background: #f4f4f4; }
+        .container { background: white; padding: 20px; border-radius: 8px; max-width: 400px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; }
+        button { background: #28a745; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>House Price Predictor</h2>
+        <label>Enter Features (comma separated):</label>
+        <p><small>Example: 2000, 3, 2 (SquareFt, BHK, Bathrooms)</small></p>
+        <input type="text" id="features" placeholder="2000, 3, 2">
+        <button onclick="getPrediction()">Predict Price</button>
+        <h3 id="result"></h3>
+    </div>
+
+    <script>
+        async function getPrediction() {
+            // !!! REPLACE WITH YOUR INVOKE URL FROM API GATEWAY !!!
+            const API_URL = "YOUR_API_GATEWAY_URL_HERE/predict";
+            
+            const featureInput = document.getElementById('features').value;
+            const featuresArray = featureInput.split(',').map(Number);
+
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ "features": featuresArray })
+            });
+
+            const data = await response.json();
+            if(data.prediction) {
+                document.getElementById('result').innerText = "Price: ₹" + data.prediction.toLocaleString();
+            } else {
+                document.getElementById('result').innerText = "Error: " + data.error;
+            }
+        }
+    </script>
+</body>
+</html>
